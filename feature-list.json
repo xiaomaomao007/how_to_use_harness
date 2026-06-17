@@ -1,0 +1,60 @@
+{
+  "features": [
+    {
+      "id": "feat-001",
+      "name": "Project Setup",
+      "description": "Initialize Tauri 2 + React + TypeScript + Vite + Tailwind CSS. Configure frontend build toolchain and Rust backend skeleton. Verify npm install, typecheck, lint, vite build all pass.",
+      "dependencies": [],
+      "status": "done",
+      "evidence": "npm install completed. tsc --noEmit passed. Vite build passed (dist/index.html + assets/). IDE Linter: 0 errors. Rust skeleton: 6 modules."
+    },
+    {
+      "id": "feat-002",
+      "name": "GitHub API Integration (Rust Backend)",
+      "description": "Implement GitHub API calls in Rust backend via octocrab 0.40. Expose via 12 Tauri commands: search users/orgs, fetch repos, fetch activities, follow/unfollow, cache operations, token management.",
+      "dependencies": ["feat-001"],
+      "status": "done",
+      "evidence": "github_api.rs: search_users, search_orgs, get_repos (org+user fallback), get_activities (org+user fallback). commands.rs: 12 commands registered. Cargo.toml: octocrab 0.40, rusqlite 0.31, dirs 5."
+    },
+    {
+      "id": "feat-003",
+      "name": "Community Follow Management",
+      "description": "Search and add GitHub orgs/users with All/Org mode toggle, display followed list with ORG badges, support unfollow. Duplicate detection. Frontend invokes Rust Tauri commands for data. SQLite persistence.",
+      "dependencies": ["feat-002"],
+      "status": "done",
+      "evidence": "AddFollow.tsx: debounced search with mode toggle, duplicate check. FollowList.tsx: selected state, unfollow button. Sidebar.tsx: container with count. useFollow.ts + useSearch.ts hooks. SQLite followed_entities table."
+    },
+    {
+      "id": "feat-004",
+      "name": "Repository Browser",
+      "description": "Display all repos of followed communities with sorting (stars/updated/name/forks), search filter, language filter dropdown. Grid layout with RepoCard.",
+      "dependencies": ["feat-003"],
+      "status": "done",
+      "evidence": "RepoList.tsx: search + language filter + sort toolbar, skeleton loading, grid. RepoCard.tsx: language dot, stars/forks counts, topics, archived badge, time-ago. useRepos.ts hook."
+    },
+    {
+      "id": "feat-005",
+      "name": "Activity Dashboard",
+      "description": "Show recent activities: commits, issues, PRs, releases with timeline view grouped by date and event type filtering chips with counts.",
+      "dependencies": ["feat-004"],
+      "status": "done",
+      "evidence": "ActivityFeed.tsx: 15+ event type filter chips, date-grouped timeline, PushEvent commit messages. useActivities.ts hook. EVENT_TYPE_ICONS mapping in utils/github.ts."
+    },
+    {
+      "id": "feat-006",
+      "name": "Data Persistence & Caching (SQLite)",
+      "description": "SQLite storage via rusqlite in Rust backend. Auto-save repos/activities on fetch, get_cache_info/get_cached_data/clear_all_cache commands. Entity persistence with add/remove/get commands.",
+      "dependencies": ["feat-005"],
+      "status": "done",
+      "evidence": "database.rs: Mutex<Connection>, followed_entities + entity_cache tables, upsert/get/clear. commands.rs: auto-cache on get_github_repos and get_github_activities. CacheInfo/CachedEntry types."
+    },
+    {
+      "id": "feat-007",
+      "name": "UI Polish & Verification",
+      "description": "GitHub dark theme, skeleton loading animations, empty states with bounce animation, error states with retry, keyboard shortcuts (Ctrl+1/2 tab switch), custom scrollbars.",
+      "dependencies": ["feat-006"],
+      "status": "done",
+      "evidence": "tailwind.config.js: 10 custom gh-* colors. index.css: custom scrollbar. Skeleton pulse animations. Empty states with animate-bounce. Error with retry. Ctrl+1 repos, Ctrl+2 activity tab switching."
+    }
+  ]
+}
